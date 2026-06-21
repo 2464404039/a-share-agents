@@ -1,3 +1,10 @@
+import os
+# Force-disable proxies before any network imports
+for var in ("HTTP_PROXY", "HTTPS_PROXY", "http_proxy", "https_proxy", "ALL_PROXY", "all_proxy"):
+    os.environ.pop(var, None)
+os.environ["NO_PROXY"] = "*"
+os.environ["no_proxy"] = "*"
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import logging

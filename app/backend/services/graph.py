@@ -91,6 +91,10 @@ def create_graph(graph_nodes: list, graph_edges: list) -> StateGraph:
             source_base_key = extract_base_agent_key(edge.source)
             target_base_key = extract_base_agent_key(edge.target)
             
+            # Skip edges where the source is not a real agent (e.g. stock-analyzer-node)
+            if source_base_key not in ANALYST_CONFIG and source_base_key != "portfolio_manager":
+                continue
+                
             nodes_with_incoming_edges.add(edge.target)
             nodes_with_outgoing_edges.add(edge.source)
             

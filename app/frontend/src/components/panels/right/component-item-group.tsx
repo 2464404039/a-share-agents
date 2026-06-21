@@ -1,6 +1,7 @@
 import ComponentItem from '@/components/panels/right/component-item';
 import { AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { useFlowContext } from '@/contexts/flow-context';
+import { useTranslation } from '@/i18n/I18nProvider';
 import { ComponentGroup } from '@/data/sidebar-components';
 
 interface ComponentItemGroupProps {
@@ -12,6 +13,7 @@ export function ComponentItemGroup({
   group, 
   activeItem
 }: ComponentItemGroupProps) {
+  const { t } = useTranslation();
   const { name, icon: Icon, iconColor, items } = group;
   const { addComponentToFlow } = useFlowContext();
 
@@ -28,7 +30,7 @@ export function ComponentItemGroup({
       <AccordionTrigger className="px-4 py-2 text-sm hover-bg hover:no-underline">
         <div className="flex items-center gap-2">
           <Icon size={16} className={iconColor} />
-          <span className="capitalize">{name}</span>
+          <span className="capitalize">{t(name)}</span>
         </div>
       </AccordionTrigger>
       <AccordionContent className="px-4">

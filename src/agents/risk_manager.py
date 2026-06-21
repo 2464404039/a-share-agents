@@ -35,13 +35,22 @@ def risk_management_agent(state: AgentState, agent_id: str = "risk_management_ag
         )
 
         if not prices:
-            progress.update_status(agent_id, ticker, "Warning: No price data found")
+            progress.update_status(agent_id, ticker, "Warning: No price data found, trying Tencent real-time")
             volatility_data[ticker] = {
                 "daily_volatility": 0.05,  # Default fallback volatility (5% daily)
                 "annualized_volatility": 0.05 * np.sqrt(252),
                 "volatility_percentile": 100,  # Assume high risk if no data
                 "data_points": 0
             }
+            # Fallback: get current price from Tencent (always works for A-shares)
+            try:
+                from src.tools.akshare_data import _tencent_quote
+                tq = _tencent_quote(ticker)
+                if tq and tq.get("price", 0) > 0:
+                    current_prices[ticker] = float(tq["price"])
+                    progress.update_status(agent_id, ticker, f"Tencent price: {current_prices[ticker]:.2f}")
+            except Exception:
+                pass
             continue
 
         prices_df = prices_to_df(prices)

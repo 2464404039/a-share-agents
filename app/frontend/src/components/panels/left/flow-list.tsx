@@ -2,6 +2,7 @@ import { FlowItemGroup } from '@/components/panels/left/flow-item-group';
 import { SearchBox } from '@/components/panels/search-box';
 import { Accordion } from '@/components/ui/accordion';
 import { useTabsContext } from '@/contexts/tabs-context';
+import { useTranslation } from '@/i18n/I18nProvider';
 import { Flow } from '@/types/flow';
 import { FolderOpen } from 'lucide-react';
 
@@ -34,6 +35,7 @@ export function FlowList({
   onDeleteFlow,
   onRefresh,
 }: FlowListProps) {
+  const { t } = useTranslation();
   const { tabs, activeTabId } = useTabsContext();
 
   // Only consider a flow active if the current active tab is a flow tab with that flow's ID
@@ -56,12 +58,12 @@ export function FlowList({
       <SearchBox 
         value={searchQuery} 
         onChange={onSearchChange}
-        placeholder="Search flows..."
+        placeholder={t('Search flows...')}
       />
       
       {isLoading ? (
         <div className="flex items-center justify-center py-8">
-          <div className="text-muted-foreground text-sm">Loading flows...</div>
+          <div className="text-muted-foreground text-sm">{t('Loading')}...</div>
         </div>
       ) : (
         <Accordion 
@@ -73,7 +75,7 @@ export function FlowList({
           {recentFlows.length > 0 && (
             <FlowItemGroup
               key="recent-flows"
-              title="Recent Flows"
+              title={t('Recent Flows')}
               flows={recentFlows}
               onLoadFlow={onLoadFlow}
               onDeleteFlow={onDeleteFlow}
@@ -85,7 +87,7 @@ export function FlowList({
           {templateFlows.length > 0 && (
             <FlowItemGroup
               key="templates"
-              title="Templates"
+              title={t('Templates')}
               flows={templateFlows}
               onLoadFlow={onLoadFlow}
               onDeleteFlow={onDeleteFlow}
@@ -101,11 +103,11 @@ export function FlowList({
           {flows.length === 0 ? (
             <div className="space-y-2">
               <FolderOpen size={32} className="mx-auto text-muted-foreground" />
-              <div>No flows saved yet</div>
-              <div className="text-xs">Create your first flow to get started</div>
+              <div>{t('No flows saved yet')}</div>
+              <div className="text-xs">{t('Create your first flow to get started')}</div>
             </div>
           ) : (
-            'No flows match your search'
+            t('No flows match your search')
           )}
         </div>
       )}

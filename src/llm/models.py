@@ -50,11 +50,11 @@ class LLMModel(BaseModel):
 
     def has_json_mode(self) -> bool:
         """Check if the model supports JSON mode"""
+        # DeepSeek and Gemini: langchain's with_structured_output can send
+        # the API key to a wrong base URL. Use prompt-based JSON extraction.
         if self.is_deepseek() or self.is_gemini():
             return False
-        # Anthropic reasoning models reject forced tool_choice, which is how
-        # langchain-anthropic implements with_structured_output. Route them
-        # through prompt-based JSON extraction instead.
+        # Anthropic reasoning models reject forced tool_choice
         if self.is_anthropic_reasoning():
             return False
         # Only certain Ollama models support JSON mode
@@ -176,7 +176,20 @@ def get_model(model_name: str, model_provider: ModelProvider, api_keys: dict = N
         if not api_key:
             print(f"API Key Error: Please make sure DEEPSEEK_API_KEY is set in your .env file or provided via API keys.")
             raise ValueError("DeepSeek API key not found.  Please make sure DEEPSEEK_API_KEY is set in your .env file or provided via API keys.")
-        return ChatDeepSeek(model=model_name, api_key=api_key)
+        api_key = api_key.strip()  # Strip trailing whitespace that CMD set may introduce
+        from langchain_openai import ChatOpenAI
+        import httpx
+        # Use raw ChatOpenAI (NOT ChatDeepSeek) with full proxy bypass
+        return ChatOpenAI(
+            model=model_name,
+            api_key=api_key,
+            base_url="https://api.deepseek.com/v1",
+            http_client=httpx.Client(
+                transport=httpx.HTTPTransport(retries=2, proxy=None),
+                proxy=None,
+                trust_env=False,
+            ),
+        )
     elif model_provider == ModelProvider.GOOGLE:
         api_key = (api_keys or {}).get("GOOGLE_API_KEY") or os.getenv("GOOGLE_API_KEY")
         if not api_key:

@@ -72,7 +72,14 @@ class LineItem(BaseModel):
     currency: str
 
     # Allow additional fields dynamically
-    model_config = {"extra": "allow"}
+    model_config = {"extra": "allow", "populate_by_name": True}
+    
+    def __getattr__(self, name):
+        """Return None for any unset field instead of raising AttributeError."""
+        try:
+            return super().__getattr__(name)
+        except AttributeError:
+            return None
 
 
 class LineItemResponse(BaseModel):

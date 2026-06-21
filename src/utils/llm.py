@@ -35,8 +35,8 @@ def call_llm(
         model_name, model_provider = get_agent_model_config(state, agent_name)
     else:
         # Use system defaults when no state or agent_name is provided
-        model_name = "gpt-4.1"
-        model_provider = "OPENAI"
+        model_name = "deepseek-v4-pro"
+        model_provider = "DeepSeek"
 
     # Extract API keys from state if available
     api_keys = None
@@ -66,6 +66,10 @@ def call_llm(
                 parsed_result = extract_json_from_response(result.content)
                 if parsed_result:
                     return pydantic_model(**parsed_result)
+                # Parsing failed - retry
+                if attempt < max_retries - 1:
+                    continue
+                raise ValueError(f"Failed to extract valid JSON from LLM response after {max_retries} attempts")
             else:
                 return result
 
@@ -185,8 +189,8 @@ def get_agent_model_config(state, agent_name):
             return model_name, model_provider.value if hasattr(model_provider, 'value') else str(model_provider)
     
     # Fall back to global configuration (system defaults)
-    model_name = state.get("metadata", {}).get("model_name") or "gpt-4.1"
-    model_provider = state.get("metadata", {}).get("model_provider") or "OPENAI"
+    model_name = state.get("metadata", {}).get("model_name") or "deepseek-v4-pro"
+    model_provider = state.get("metadata", {}).get("model_provider") or "DeepSeek"
     
     # Convert enum to string if necessary
     if hasattr(model_provider, 'value'):

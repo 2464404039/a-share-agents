@@ -1,4 +1,17 @@
+import os
 import sys
+
+# ═══════════════════════════════════════════════════════════════
+# Force-disable ALL proxy sources (BEFORE importing any network lib)
+# httpx/requests on Windows reads IE proxy settings. We need
+# env vars + no_proxy + trust_env=False to fully bypass.
+# Setting to "" rather than pop() because some libs check existence.
+# ═══════════════════════════════════════════════════════════════
+for var in ("HTTP_PROXY", "HTTPS_PROXY", "http_proxy", "https_proxy",
+            "ALL_PROXY", "all_proxy"):
+    os.environ[var] = ""
+os.environ["NO_PROXY"] = "*"
+os.environ["no_proxy"] = "*"
 
 from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage

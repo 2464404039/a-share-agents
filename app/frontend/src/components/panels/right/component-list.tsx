@@ -1,5 +1,6 @@
 import { Accordion } from '@/components/ui/accordion';
 import { ComponentGroup } from '@/data/sidebar-components';
+import { useTranslation } from '@/i18n/I18nProvider';
 import { SearchBox } from '../search-box';
 import { ComponentItemGroup } from './component-item-group';
 
@@ -24,17 +25,18 @@ export function ComponentList({
   onSearchChange,
   onAccordionChange,
 }: ComponentListProps) {
+  const { t } = useTranslation();
   return (
     <div className="flex-grow overflow-auto text-primary scrollbar-thin scrollbar-thumb-ramp-grey-700">
       <SearchBox 
         value={searchQuery} 
         onChange={onSearchChange}
-        placeholder="Search components..."
+        placeholder={t('Search components...')}
       />
       
       {isLoading ? (
         <div className="flex items-center justify-center py-8">
-          <div className="text-muted-foreground text-sm">Loading components...</div>
+          <div className="text-muted-foreground text-sm">{t('Loading')}...</div>
         </div>
       ) : (
         <Accordion 
@@ -57,14 +59,14 @@ export function ComponentList({
         <div className="text-center py-8 text-muted-foreground text-sm">
           {componentGroups.length === 0 ? (
             <div className="space-y-2">
-              <div>No components available</div>
-              <div className="text-xs">Components will appear here when loaded</div>
+              <div>{t('No components available')}</div>
+              <div className="text-xs">{t('Components will appear here when loaded')}</div>
             </div>
           ) : (
-            'No components match your search'
+            t('No components match your search')
           )}
         </div>
       )}
     </div>
   );
-} 
+}

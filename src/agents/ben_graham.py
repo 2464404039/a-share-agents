@@ -73,6 +73,7 @@ def ben_graham_agent(state: AgentState, agent_id: str = "ben_graham_agent"):
             analysis_data=analysis_data,
             state=state,
             agent_id=agent_id,
+            fallback_signal=signal,
         )
 
         graham_analysis[ticker] = {"signal": graham_output.signal, "confidence": graham_output.confidence, "reasoning": graham_output.reasoning}
@@ -284,6 +285,7 @@ def generate_graham_output(
     analysis_data: dict[str, any],
     state: AgentState,
     agent_id: str,
+    fallback_signal: str = "neutral",
 ) -> BenGrahamSignal:
     """
     Generates an investment decision in the style of Benjamin Graham:
@@ -337,7 +339,7 @@ def generate_graham_output(
     prompt = template.invoke({"analysis_data": json.dumps(analysis_data, indent=2), "ticker": ticker})
 
     def create_default_ben_graham_signal():
-        return BenGrahamSignal(signal="neutral", confidence=0.0, reasoning="Error in generating analysis; defaulting to neutral.")
+        return BenGrahamSignal(signal=fallback_signal, confidence=0.0, reasoning=f"LLM analysis unavailable; fallback to quantitative signal: {fallback_signal}.")
 
     return call_llm(
         prompt=prompt,
