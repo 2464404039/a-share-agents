@@ -51,7 +51,7 @@
 
 ```bash
 git clone https://github.com/2464404039/a-share-agents.git
-cd ai-hedge-fund
+cd a-share-agents
 poetry install
 ```
 
