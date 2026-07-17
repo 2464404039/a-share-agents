@@ -67,7 +67,7 @@ set DEEPSEEK_API_KEY=sk-your-key-here
 
 **单个 A 股全部分析师：**
 ```cmd
-cd /d C:\Users\Administrator\ai-hedge-fund && set DEEPSEEK_API_KEY=*** && poetry run python src/main.py --ticker 688008.SS --model deepseek-v4-pro --analysts-all
+cd /d C:\Users\Administrator\a-share-agents && set DEEPSEEK_API_KEY=*** && poetry run python src/main.py --ticker 688008.SS --model deepseek-v4-pro --analysts-all
 ```
 
 **只跑特定分析师（更快）：**
@@ -84,11 +84,11 @@ poetry run python src/main.py --ticker AAPL --model deepseek-v4-pro --analysts-a
 
 ```cmd
 :: 终端 1：启动后端
-cd /d C:\Users\Administrator\ai-hedge-fund
+cd /d C:\Users\Administrator\a-share-agents
 poetry run uvicorn app.backend.main:app --host 127.0.0.1 --port 8080
 
 :: 终端 2：启动前端
-cd /d C:\Users\Administrator\ai-hedge-fund\app\frontend
+cd /d C:\Users\Administrator\a-share-agents\app\frontend
 npm run dev
 ```
 
