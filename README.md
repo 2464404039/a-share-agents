@@ -50,7 +50,7 @@
 ### 安装
 
 ```bash
-git clone https://github.com/2464404039/ai-hedge-fund.git
+git clone https://github.com/2464404039/a-share-agents.git
 cd ai-hedge-fund
 poetry install
 ```
